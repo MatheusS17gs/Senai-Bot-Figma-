@@ -1,0 +1,385 @@
+<!<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENAI-GPT</title>
+    <!-- Ícones do FontAwesome para as engrenagens, sol/lua e aviões de papel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================
+           VARIÁVEIS DE CORES (Tema Claro por padrão)
+           ========================================== */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1f1f1f;
+            --sidebar-color: #e31d3b; /* Vermelho SENAI */
+            --input-border: #999999;
+            --input-placeholder: #777777;
+            --button-bg: #e31d3b;
+            --button-text: #ffffff;
+            --card-bg: #f5f5f5;
+        }
+
+        /* Tema Escuro (ativado via JS) */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #f1f1f1;
+            --sidebar-color: #b0152c;
+            --input-border: #555555;
+            --input-placeholder: #aaaaaa;
+            --button-bg: #e31d3b;
+            --button-text: #ffffff;
+            --card-bg: #1e1e1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Faixa lateral esquerda */
+        .sidebar {
+            width: 40px;
+            background-color: var(--sidebar-color);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        /* Container Principal */
+        .main-container {
+            flex: 1;
+            margin-left: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Painel Superior Direito (Tema e Login/Configurações) */
+        .top-controls {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* Conteúdo Central */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        /* Imagem do Robô */
+        .robot-avatar {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        /* Título Principal */
+        .title {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Área de Input */
+        .input-wrapper {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 12px 60px 12px 0;
+            border: none;
+            border-bottom: 2px solid var(--input-border);
+            background: transparent;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        .send-btn {
+            position: absolute;
+            right: 0;
+            bottom: 5px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .send-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Logo SENAI Rodapé */
+        .senai-logo {
+            font-weight: 900;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: var(--sidebar-color);
+            letter-spacing: 1px;
+            border-top: 3px solid var(--sidebar-color);
+            border-bottom: 3px solid var(--sidebar-color);
+            padding: 2px 8px;
+            margin-top: 20px;
+        }
+
+        /* Modal de Login (Opcional) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal {
+            float: right;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Faixa Lateral Vermelha -->
+    <div class="sidebar"></div>
+
+    <!-- Container Conteúdo -->
+    <div class="main-container">
+        
+        <!-- Botões do Canto Superior Direito -->
+        <div class="top-controls">
+            <!-- Botão Alternar Tema (Claro/Escuro) -->
+            <button class="icon-btn" id="themeToggleBtn" title="Alternar Tema Claro/Escuro">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            
+            <!-- Botão de Configurações / Login -->
+            <button class="icon-btn" id="loginBtn" title="Login / Configurações">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+
+        <!-- Bloco Central -->
+        <div class="content">
+            <!-- SVG / Ilustração do Robô Vermelho -->
+            <svg class="robot-avatar" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Antena -->
+                <line x1="50" y1="15" x2="50" y2="25" stroke="#E31D3B" stroke-width="4"/>
+                <circle cx="50" cy="12" r="5" fill="#E31D3B"/>
+                <!-- Cabeça -->
+                <rect x="25" y="25" width="50" height="40" rx="10" fill="#E31D3B"/>
+                <!-- Orelhas -->
+                <rect x="18" y="38" width="7" height="14" rx="3" fill="#E31D3B"/>
+                <rect x="75" y="38" width="7" height="14" rx="3" fill="#E31D3B"/>
+                <!-- Olhos -->
+                <circle cx="38" cy="42" r="8" fill="white"/>
+                <circle cx="62" cy="42" r="8" fill="white"/>
+                <circle cx="38" cy="42" r="4" fill="#00B4D8"/>
+                <circle cx="62" cy="42" r="4" fill="#00B4D8"/>
+                <!-- Boca -->
+                <rect x="38" y="55" width="24" height="4" rx="2" fill="white"/>
+                <!-- Corpo -->
+                <path d="M 30 70 L 70 70 L 65 90 L 35 90 Z" fill="#E31D3B"/>
+                <!-- Detalhe Peito -->
+                <circle cx="50" cy="80" r="5" fill="#00B4D8"/>
+            </svg>
+
+            <!-- Título -->
+            <h1 class="title">SENAI-GPT</h1>
+
+            <!-- Input do Chat -->
+            <div class="input-wrapper">
+                <input type="text" id="userInput" class="chat-input" placeholder="Pergunte algo..." autocomplete="off">
+                <button class="send-btn" id="sendBtn" title="Enviar">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Logo SENAI -->
+            <div class="senai-logo">
+                SENAI
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2>Área de Login</h2>
+            <form id="loginForm">
+                <input type="email" placeholder="E-mail" required>
+                <input type="password" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       JAVASCRIPT (Lógica de Temas, Modal e Envio)
+       ========================================== -->
+    <script>
+        // Elementos
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeModal = document.getElementById('closeModal');
+        const sendBtn = document.getElementById('sendBtn');
+        const userInput = document.getElementById('userInput');
+
+        // 1. Funcionalidade de Alternar Tema (Claro / Escuro)
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+
+            // Troca o ícone de Lua para Sol e vice-versa
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // 2. Abrir/Fechar Modal de Login
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        // Fechar modal clicando fora dele
+        window.addEventListener('click', (event) => {
+            if (event.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+
+        // 3. Ação de Enviar Mensagem
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (text !== '') {
+                alert(`Mensagem enviada: "${text}"`);
+                userInput.value = ''; // Limpa o campo
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Enviar com a tecla Enter
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
