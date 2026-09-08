@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENAI-GPT</title>
+    <!-- Ícones do FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Arquivo CSS Externo -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Faixa Lateral Vermelha -->
+    <div class="sidebar"></div>
+
+    <!-- Container Conteúdo -->
+    <div class="main-container">
+        
+        <!-- Botões do Canto Superior Direito -->
+        <div class="top-controls">
+            <!-- Botão Alternar Tema (Claro/Escuro) -->
+            <button class="icon-btn" id="themeToggleBtn" title="Alternar Tema Claro/Escuro">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            
+            <!-- Botão de Configurações / Login -->
+            <button class="icon-btn" id="loginBtn" title="Login / Configurações">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+
+        <!-- Bloco Central -->
+        <div class="content">
+            <!-- SVG / Ilustração do Robô Vermelho -->
+            <svg class="robot-avatar" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Antena -->
+                <line x1="50" y1="15" x2="50" y2="25" stroke="#E31D3B" stroke-width="4"/>
+                <circle cx="50" cy="12" r="5" fill="#E31D3B"/>
+                <!-- Cabeça -->
+                <rect x="25" y="25" width="50" height="40" rx="10" fill="#E31D3B"/>
+                <!-- Orelhas -->
+                <rect x="18" y="38" width="7" height="14" rx="3" fill="#E31D3B"/>
+                <rect x="75" y="38" width="7" height="14" rx="3" fill="#E31D3B"/>
+                <!-- Olhos -->
+                <circle cx="38" cy="42" r="8" fill="white"/>
+                <circle cx="62" cy="42" r="8" fill="white"/>
+                <circle cx="38" cy="42" r="4" fill="#00B4D8"/>
+                <circle cx="62" cy="42" r="4" fill="#00B4D8"/>
+                <!-- Boca -->
+                <rect x="38" y="55" width="24" height="4" rx="2" fill="white"/>
+                <!-- Corpo -->
+                <path d="M 30 70 L 70 70 L 65 90 L 35 90 Z" fill="#E31D3B"/>
+                <!-- Detalhe Peito -->
+                <circle cx="50" cy="80" r="5" fill="#00B4D8"/>
+            </svg>
+
+            <!-- Título -->
+            <h1 class="title">SENAI-GPT</h1>
+
+            <!-- Input do Chat -->
+            <div class="input-wrapper">
+                <input type="text" id="userInput" class="chat-input" placeholder="Pergunte algo..." autocomplete="off">
+                <button class="send-btn" id="sendBtn" title="Enviar">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+            <!-- Logo SENAI -->
+            <div class="senai-logo">
+                SENAI
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2>Área de Login</h2>
+            <form id="loginForm">
+                <input type="email" placeholder="E-mail" required>
+                <input type="password" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeToggleBtn.querySelector('i');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeModal = document.getElementById('closeModal');
+        const sendBtn = document.getElementById('sendBtn');
+        const userInput = document.getElementById('userInput');
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+
+            if (document.body.classList.contains('dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        loginBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (text !== '') {
+                alert(`Mensagem enviada: "${text}"`);
+                userInput.value = '';
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
