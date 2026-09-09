@@ -2,26 +2,26 @@
    VARIÁVEIS DE CORES (Tema Claro por padrão)
    ========================================== */
 :root {
-    --bg-color: #ffffff;
-    --text-color: #1f1f1f;
+    --bg-color: #2cc3ff98;
+    --text-color: #6d6d6d;
     --sidebar-color: #e31d3b; /* Vermelho SENAI */
-    --input-border: #999999;
-    --input-placeholder: #777777;
+    --input-border: #ffffff;
+    --input-placeholder: #ffffff;
     --button-bg: #e31d3b;
-    --button-text: #ffffff;
+    --button-text: #2042d6;
     --card-bg: #f5f5f5;
 }
 
 /* Tema Escuro (ativado via JS) */
 body.dark-mode {
-    --bg-color: #121212;
+    --bg-color: #0f28b4;
     --text-color: #f1f1f1;
     --sidebar-color: #b0152c;
     --input-border: #555555;
     --input-placeholder: #aaaaaa;
-    --button-bg: #e31d3b;
-    --button-text: #ffffff;
-    --card-bg: #1e1e1e;
+    --button-bg: #b11a30;
+    --button-text: #00c3ff;
+    --card-bg: #000000;
 }
 
 * {
@@ -53,6 +53,7 @@ body {
 /* Container Principal */
 .main-container {
     flex: 1;
+    width: calc(100% - 40px);
     margin-left: 40px;
     display: flex;
     flex-direction: column;
@@ -61,16 +62,20 @@ body {
     padding: 20px;
     position: relative;
     min-height: 100vh;
+    box-sizing: border-box;
 }
 
-/* Painel Superior Direito (Tema e Login/Configurações) */
+/* Painel Superior Direito (Tema e Register) */
 .top-controls {
     position: absolute;
     top: 25px;
-    right: 30px;
+    right: 20px;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 15px;
+    max-width: calc(100% - 60px);
+    z-index: 10;
 }
 
 .icon-btn {
@@ -87,10 +92,37 @@ body {
     font-size: 1.2rem;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     transition: transform 0.2s, background-color 0.3s;
+    flex-shrink: 0;
 }
 
 .icon-btn:hover {
     transform: scale(1.08);
+}
+
+.register-btn {
+    padding: 0 18px;
+    height: 45px;
+    border-radius: 999px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s, opacity 0.2s, background-color 0.3s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.register-btn:hover {
+    transform: scale(1.04);
+    opacity: 0.95;
 }
 
 /* Conteúdo Central */
