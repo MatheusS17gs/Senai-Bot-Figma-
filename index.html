@@ -37,6 +37,8 @@
             <!-- Título -->
             <h1 class="title">SENAI-GPT</h1>
 
+            <div class="chat-window" id="chatMessages" aria-live="polite"></div>
+
             <!-- Input do Chat -->
             <div class="input-wrapper">
                 <input type="text" id="userInput" class="chat-input" placeholder="Pergunte algo..." autocomplete="off">
@@ -66,56 +68,6 @@
     </div>
 
     <!-- JAVASCRIPT -->
-    <script>
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const themeIcon = themeToggleBtn.querySelector('i');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginModal = document.getElementById('loginModal');
-        const closeModal = document.getElementById('closeModal');
-        const sendBtn = document.getElementById('sendBtn');
-        const userInput = document.getElementById('userInput');
-
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-
-            if (document.body.classList.contains('dark-mode')) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            }
-        });
-
-        loginBtn.addEventListener('click', () => {
-            loginModal.style.display = 'flex';
-        });
-
-        closeModal.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target === loginModal) {
-                loginModal.style.display = 'none';
-            }
-        });
-
-        function sendMessage() {
-            const text = userInput.value.trim();
-            if (text !== '') {
-                alert(`Mensagem enviada: "${text}"`);
-                userInput.value = '';
-            }
-        }
-
-        sendBtn.addEventListener('click', sendMessage);
-
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
